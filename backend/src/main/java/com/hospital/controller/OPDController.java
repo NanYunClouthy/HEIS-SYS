@@ -1,0 +1,80 @@
+package com.hospital.controller;
+
+import com.hospital.entity.OPD;
+import com.hospital.service.OPDService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/opds")
+@CrossOrigin(origins = "*", maxAge = 3600)
+public class OPDController {
+
+    @Autowired
+    private OPDService opdService;
+
+    // 获取所有OPD记录
+    @GetMapping
+    public ResponseEntity<List<OPD>> getAllOPDs() {
+        List<OPD> opds = opdService.getAllOPDs();
+        return new ResponseEntity<>(opds, HttpStatus.OK);
+    }
+
+    // 根据ID获取OPD记录
+    @GetMapping("/{id}")
+    public ResponseEntity<OPD> getOPDById(@PathVariable Integer id) {
+        Optional<OPD> opd = opdService.getOPDById(id);
+        return opd.map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    // 创建OPD记录（挂号）
+    @PostMapping
+    public ResponseEntity<OPD> createOPD(@RequestBody OPD opd) {
+        OPD savedOPD = opdService.saveOPD(opd);
+        return new ResponseEntity<>(savedOPD, HttpStatus.CREATED);
+    }
+
+    // 获取待就诊患者列表
+    @GetMapping("/waiting")
+    public ResponseEntity<List<OPD>> getWaitingPatients() {
+        // 1表示待就诊状态
+        List<OPD> waitingPatients = opdService.getWaitingPatients(1);
+        return new ResponseEntity<>(waitingPatients, HttpStatus.OK);
+    }
+
+    // 根据科室获取待就诊患者列表
+    @GetMapping("/waiting/{dept}")
+    public ResponseEntity<List<OPD>> getWaitingPatientsByDept(@PathVariable String dept) {
+        // 1表示待就诊状态
+        List<OPD> waitingPatients = opdService.getWaitingPatientsByDept(dept, 1);
+        return new ResponseEntity<>(waitingPatients, HttpStatus.OK);
+    }
+
+    // 叫号
+    @PutMapping("/{id}/call")
+    public ResponseEntity<OPD> callPatient(@PathVariable Integer id) {
+        OPD calledOPD = opdService.callPatient(id);
+        if (calledOPD != null) {
+            return new ResponseEntity<>(calledOPD, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 过号
+    @PutMapping("/{id}/skip")
+    public ResponseEntity<OPD> skipPatient(@PathVariable Integer id) {
+        OPD skippedOPD = opdService.skipPatient(id);
+        if (skippedOPD != null) {
+            return new ResponseEntity<>(skippedOPD, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}
