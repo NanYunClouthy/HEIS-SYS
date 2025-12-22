@@ -12,6 +12,10 @@ public class Patient {
     @Column(name = "PAT_ID")
     private Integer patId;
 
+    @OneToOne
+    @JoinColumn(name = "USER_ID", nullable = false, unique = true)
+    private User user;
+
     @Column(name = "PAT_NAME", nullable = false, length = 50)
     private String patName;
 

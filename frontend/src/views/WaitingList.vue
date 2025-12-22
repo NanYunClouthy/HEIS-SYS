@@ -67,6 +67,25 @@
         <p><strong>科室：</strong>{{ currentPatient.opdDept }}</p>
         <p><strong>联系电话：</strong>{{ currentPatient.patient.patTel }}</p>
       </div>
+      <div class="consultation-form">
+        <h3>就诊记录</h3>
+        <div class="form-group">
+          <label>病例描述</label>
+          <textarea v-model="consultationForm.visCaseDesc" rows="4" placeholder="请输入病例描述"></textarea>
+        </div>
+        <div class="form-group">
+          <label>诊断结果</label>
+          <input v-model="consultationForm.visDiagnosis" placeholder="请输入诊断结果">
+        </div>
+        <div class="form-group">
+          <label>备注</label>
+          <textarea v-model="consultationForm.visNote" rows="3" placeholder="备注（可选）"></textarea>
+        </div>
+        <div class="actions">
+          <button class="primary" @click="submitConsultation">保存并过号</button>
+          <button class="warning" @click="skipPatient(currentPatient)">直接过号</button>
+        </div>
+      </div>
     </div>
     
     <!-- 成功提示 -->
@@ -79,6 +98,8 @@
 
 <script>
 import { opdApi } from '../api/opd'
+import { doctorApi } from '../api/doctor'
+import { visitApi } from '../api/visit'
 
 export default {
   name: 'WaitingList',
@@ -88,11 +109,19 @@ export default {
       waitingPatients: [],
       currentPatient: null,
       successMessage: '',
-      refreshInterval: null
+      errorMessage: '',
+      isLoading: false,
+      refreshInterval: null,
+      doctorInfo: null,
+      consultationForm: {
+        visCaseDesc: '',
+        visDiagnosis: '',
+        visNote: ''
+      }
     }
   },
   mounted() {
-    this.fetchWaitingPatients()
+    this.initDoctorDept()
     // 设置自动刷新，每5秒刷新一次
     this.refreshInterval = setInterval(() => {
       this.fetchWaitingPatients()
@@ -105,6 +134,23 @@ export default {
     }
   },
   methods: {
+    async initDoctorDept() {
+      this.isLoading = true
+      this.errorMessage = ''
+      try {
+        const res = await doctorApi.me()
+        this.doctorInfo = res.data
+        if (this.doctorInfo?.docDept) {
+          this.selectedDept = this.doctorInfo.docDept
+        }
+        await this.fetchWaitingPatients()
+      } catch (e) {
+        console.error('获取医生信息失败:', e)
+        await this.fetchWaitingPatients()
+      } finally {
+        this.isLoading = false
+      }
+    },
     // 格式化日期时间
     formatDateTime(dateTime) {
       const date = new Date(dateTime)
@@ -120,6 +166,8 @@ export default {
     
     // 获取待就诊患者列表
     async fetchWaitingPatients() {
+      this.isLoading = true
+      this.errorMessage = ''
       try {
         let response
         if (this.selectedDept) {
@@ -130,34 +178,66 @@ export default {
         this.waitingPatients = response.data
       } catch (error) {
         console.error('获取候诊列表失败:', error)
-        alert('获取候诊列表失败，请稍后重试')
+        this.errorMessage = '获取候诊列表失败: ' + (error.response?.data?.message || error.message)
+      } finally {
+        this.isLoading = false
       }
     },
     
     // 叫号
     async callPatient(patient) {
+      this.errorMessage = ''
       try {
         await opdApi.callPatient(patient.opdId)
         this.currentPatient = patient
-        this.successMessage = `已叫号：${patient.patient.patName}，请患者到诊室就诊`
-        // 刷新候诊列表
-        this.fetchWaitingPatients()
+        this.successMessage = `已叫号：${patient.patient.patName}，请编写就诊记录`
+        this.consultationForm = { visCaseDesc: '', visDiagnosis: '', visNote: '' }
       } catch (error) {
         console.error('叫号失败:', error)
-        alert('叫号失败，请稍后重试')
+        this.errorMessage = '叫号失败: ' + (error.response?.data?.message || error.message)
       }
     },
     
     // 过号
     async skipPatient(patient) {
+      this.errorMessage = ''
       try {
         await opdApi.skipPatient(patient.opdId)
         this.successMessage = `已过号：${patient.patient.patName}`
+        this.currentPatient = null
         // 刷新候诊列表
         this.fetchWaitingPatients()
       } catch (error) {
         console.error('过号失败:', error)
-        alert('过号失败，请稍后重试')
+        this.errorMessage = '过号失败: ' + (error.response?.data?.message || error.message)
+      }
+    },
+    async submitConsultation() {
+      if (!this.currentPatient || !this.doctorInfo) {
+        this.errorMessage = '缺少当前患者或医生信息'
+        return
+      }
+      this.errorMessage = ''
+      try {
+        const now = new Date()
+        const body = {
+          patient: { patId: this.currentPatient.patient.patId },
+          visDocId: this.doctorInfo.docId,
+          visCaseDesc: this.consultationForm.visCaseDesc,
+          visDiagnosis: this.consultationForm.visDiagnosis,
+          visCreatedBy: this.doctorInfo.docName || 'doctor',
+          visCreatedDate: now,
+          visLastModifiedBy: this.doctorInfo.docName || 'doctor',
+          visLastModifiedDate: now,
+          visNote: this.consultationForm.visNote || null
+        }
+        await visitApi.create(body)
+        await this.skipPatient(this.currentPatient)
+        this.successMessage = '就诊记录已保存并过号'
+        this.consultationForm = { visCaseDesc: '', visDiagnosis: '', visNote: '' }
+      } catch (error) {
+        console.error('保存就诊记录失败:', error)
+        this.errorMessage = '保存就诊记录失败: ' + (error.response?.data?.message || error.message)
       }
     }
   }
@@ -328,5 +408,35 @@ tr:hover {
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* 错误信息样式 */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: #f5c6cb;
+  color: #721c24;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 加载状态样式 */
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+  font-size: 18px;
 }
 </style>

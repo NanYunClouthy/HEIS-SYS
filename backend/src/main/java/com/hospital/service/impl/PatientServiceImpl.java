@@ -44,4 +44,9 @@ public class PatientServiceImpl implements PatientService {
     public List<Patient> searchPatients(Integer id, String name) {
         return patientRepository.searchPatients(id, name);
     }
+
+    @Override
+    public Patient getPatientByUserId(Integer userId) {
+        return patientRepository.findByUserUserId(userId);
+    }
 }

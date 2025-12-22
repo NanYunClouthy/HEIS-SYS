@@ -16,4 +16,6 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     // 通过病历号或姓名搜索患者
     @Query("SELECT p FROM Patient p WHERE p.patId = :id OR p.patName LIKE %:name%")
     List<Patient> searchPatients(@Param("id") Integer id, @Param("name") String name);
+
+    Patient findByUserUserId(Integer userId);
 }

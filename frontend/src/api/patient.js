@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8080/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -16,6 +17,11 @@ export const patientApi = {
   // 根据ID获取患者
   getPatientById(id) {
     return apiClient.get(`/patients/${id}`)
+  },
+  
+  // 获取当前登录用户的患者信息
+  getMe() {
+    return apiClient.get('/patients/me')
   },
   
   // 创建患者

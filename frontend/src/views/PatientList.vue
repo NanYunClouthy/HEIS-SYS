@@ -5,6 +5,16 @@
       <button class="primary" @click="openAddModal">添加患者</button>
     </div>
 
+    <!-- 错误信息 -->
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="isLoading" class="loading">
+      加载中...
+    </div>
+
     <!-- 患者表单 -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
@@ -64,7 +74,7 @@
     </div>
 
     <!-- 患者列表 -->
-    <table>
+    <table v-if="!isLoading && patients.length > 0">
       <thead>
         <tr>
           <th>ID</th>
@@ -91,6 +101,11 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- 空状态 -->
+    <div v-if="!isLoading && patients.length === 0" class="empty-state">
+      暂无患者数据
+    </div>
   </div>
 </template>
 
@@ -101,6 +116,8 @@ import { patientApi } from '../api/patient'
 const patients = ref([])
 const showModal = ref(false)
 const isEdit = ref(false)
+const isLoading = ref(false)
+const errorMessage = ref('')
 const formData = ref({
   patName: '',
   patSurname: '',
@@ -115,12 +132,18 @@ const formData = ref({
 
 // 获取所有患者
 const fetchPatients = async () => {
+  isLoading.value = true
+  errorMessage.value = ''
+  
   try {
     const response = await patientApi.getAllPatients()
     patients.value = response.data
+    console.log('患者列表:', response.data)
   } catch (error) {
     console.error('获取患者列表失败:', error)
-    alert('获取患者列表失败')
+    errorMessage.value = '获取患者列表失败: ' + (error.response?.data?.message || error.message)
+  } finally {
+    isLoading.value = false
   }
 }
 

@@ -2,165 +2,63 @@
   <div class="register-container">
     <h1>患者挂号</h1>
     
-    <!-- 搜索患者 -->
-    <div class="search-section">
-      <h2>搜索现有患者</h2>
-      <div class="search-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="searchId">病历号</label>
-            <input 
-              type="number" 
-              id="searchId" 
-              v-model="searchForm.patId" 
-              placeholder="输入病历号"
-            >
-          </div>
-          <div class="form-group">
-            <label for="searchName">姓名</label>
-            <input 
-              type="text" 
-              id="searchName" 
-              v-model="searchForm.patName" 
-              placeholder="输入姓名"
-            >
-          </div>
-          <button class="search-btn" @click="searchPatients">搜索</button>
-        </div>
-      </div>
-      
-      <!-- 搜索结果 -->
-      <div v-if="searchResults.length > 0" class="search-results">
-        <h3>搜索结果</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>病历号</th>
-              <th>姓名</th>
-              <th>年龄</th>
-              <th>性别</th>
-              <th>联系电话</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="patient in searchResults" :key="patient.patId">
-              <td>{{ patient.patId }}</td>
-              <td>{{ patient.patName }}</td>
-              <td>{{ patient.patAge }}</td>
-              <td>{{ patient.patSex }}</td>
-              <td>{{ patient.patTel }}</td>
-              <td>
-                <button @click="selectPatient(patient)">选择此患者</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- 错误信息 -->
+    <div class="error-message" v-if="errorMessage">
+      {{ errorMessage }}
+      <button @click="errorMessage = ''">关闭</button>
+    </div>
+    
+    <!-- 成功信息 -->
+    <div class="success-message" v-if="successMessage">
+      {{ successMessage }}
+      <button @click="successMessage = ''">关闭</button>
+    </div>
+    
+    <!-- 加载状态 -->
+    <div class="loading-overlay" v-if="isLoading">
+      <div class="loading-spinner"></div>
+      <p>处理中...</p>
     </div>
     
     <!-- 患者信息 -->
-    <div class="patient-section">
-      <h2>{{ selectedPatient ? '已选择患者' : '新建患者' }}</h2>
-      <form @submit.prevent="savePatient" class="patient-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="patName">姓名</label>
-            <input 
-              type="text" 
-              id="patName" 
-              v-model="patientForm.patName" 
-              required
-            >
+    <div class="patient-info-section" v-if="patientInfo">
+      <h2>患者信息</h2>
+      <div class="patient-info">
+        <div class="info-row">
+          <div class="info-item">
+            <strong>病历号：</strong>{{ patientInfo.patId }}
           </div>
-          <div class="form-group">
-            <label for="patSurname">姓氏</label>
-            <input 
-              type="text" 
-              id="patSurname" 
-              v-model="patientForm.patSurname" 
-              required
-            >
-          </div>
-          <div class="form-group">
-            <label for="patFirstname">名字</label>
-            <input 
-              type="text" 
-              id="patFirstname" 
-              v-model="patientForm.patFirstname" 
-              required
-            >
+          <div class="info-item">
+            <strong>姓名：</strong>{{ patientInfo.patName }}
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="patAge">年龄</label>
-            <input 
-              type="number" 
-              id="patAge" 
-              v-model="patientForm.patAge" 
-              required
-            >
+        <div class="info-row">
+          <div class="info-item">
+            <strong>性别：</strong>{{ patientInfo.patSex }}
           </div>
-          <div class="form-group">
-            <label for="patSex">性别</label>
-            <select id="patSex" v-model="patientForm.patSex" required>
-              <option value="男">男</option>
-              <option value="女">女</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="patActor">角色</label>
-            <input 
-              type="text" 
-              id="patActor" 
-              v-model="patientForm.patActor" 
-              required
-            >
+          <div class="info-item">
+            <strong>年龄：</strong>{{ patientInfo.patAge }}
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="patContactPerson">联系人员</label>
-            <input 
-              type="text" 
-              id="patContactPerson" 
-              v-model="patientForm.patContactPerson" 
-              required
-            >
+        <div class="info-row">
+          <div class="info-item">
+            <strong>联系电话：</strong>{{ patientInfo.patTel }}
           </div>
-          <div class="form-group">
-            <label for="patTel">联系电话</label>
-            <input 
-              type="tel" 
-              id="patTel" 
-              v-model="patientForm.patTel" 
-              required
-            >
-          </div>
-          <div class="form-group">
-            <label for="patStatus">状态</label>
-            <select id="patStatus" v-model="patientForm.patStatus" required>
-              <option value="A">活跃</option>
-              <option value="I">非活跃</option>
-            </select>
+          <div class="info-item">
+            <strong>联系人：</strong>{{ patientInfo.patContactPerson }}
           </div>
         </div>
-        <div class="form-actions">
-          <button type="submit" class="primary">保存患者</button>
-          <button type="button" @click="resetPatientForm">重置</button>
-        </div>
-      </form>
+      </div>
     </div>
     
     <!-- 挂号信息 -->
-    <div class="opd-section" v-if="selectedPatient">
+    <div class="register-section" v-if="patientInfo">
       <h2>挂号信息</h2>
-      <form @submit.prevent="registerPatient" class="opd-form">
+      <form @submit.prevent="goPayFirst" class="register-form">
         <div class="form-row">
           <div class="form-group">
             <label for="opdDept">科室</label>
-            <select id="opdDept" v-model="opdForm.opdDept" required>
+            <select id="opdDept" v-model="registerForm.opdDept" required :disabled="isLoading">
               <option value="内科">内科</option>
               <option value="外科">外科</option>
               <option value="儿科">儿科</option>
@@ -173,136 +71,95 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="submit" class="primary">确认挂号</button>
+          <button type="submit" class="primary" :disabled="isLoading">确认挂号</button>
         </div>
       </form>
     </div>
     
-    <!-- 成功提示 -->
-    <div class="success-message" v-if="successMessage">
-      {{ successMessage }}
-      <button @click="successMessage = ''">关闭</button>
+    <!-- 未登录提示 -->
+    <div class="not-logged-in" v-if="!user">
+      <h2>请先登录</h2>
+      <p>您需要先登录才能进行挂号操作</p>
+      <router-link to="/login" class="login-link">前往登录</router-link>
+    </div>
+    
+    <!-- 非患者角色提示 -->
+    <div class="not-patient" v-if="user && role !== 'PATIENT'">
+      <h2>权限不足</h2>
+      <p>只有患者才能进行挂号操作</p>
     </div>
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { patientApi } from '../api/patient'
 import { opdApi } from '../api/opd'
 
 export default {
   name: 'Register',
-  data() {
-    return {
-      searchForm: {
-        patId: '',
-        patName: ''
-      },
-      searchResults: [],
-      selectedPatient: null,
-      patientForm: {
-        patName: '',
-        patSurname: '',
-        patFirstname: '',
-        patAge: '',
-        patSex: '男',
-        patActor: '',
-        patContactPerson: '',
-        patTel: '',
-        patStatus: 'A'
-      },
-      opdForm: {
-        opdDept: '内科'
-      },
-      successMessage: ''
-    }
-  },
-  methods: {
-    // 搜索患者
-    async searchPatients() {
-      try {
-        const response = await patientApi.searchPatients(
-          this.searchForm.patId || null,
-          this.searchForm.patName
-        )
-        this.searchResults = response.data
-      } catch (error) {
-        console.error('搜索患者失败:', error)
-        alert('搜索患者失败，请稍后重试')
-      }
-    },
+  setup() {
+    const router = useRouter()
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    const role = (user?.role || '').toUpperCase()
+    const patientInfo = ref({})
+    const registerForm = ref({
+      opdDept: '内科'
+    })
+    const errorMessage = ref('')
+    const successMessage = ref('')
+    const isLoading = ref(false)
     
-    // 选择患者
-    selectPatient(patient) {
-      this.selectedPatient = patient
-      this.patientForm = { ...patient }
-      this.searchResults = []
-    },
-    
-    // 保存患者
-    async savePatient() {
+    // 获取患者信息
+    const fetchPatientInfo = async () => {
+      if (!user || role !== 'PATIENT') return
+      
       try {
-        let savedPatient
-        if (this.selectedPatient) {
-          // 更新现有患者
-          savedPatient = await patientApi.updatePatient(
-            this.selectedPatient.patId,
-            this.patientForm
-          )
-          savedPatient = savedPatient.data
+        // 从用户名中提取患者ID，例如 'pation1' -> 1
+        const username = user.username || ''
+        const patientId = parseInt(username.replace(/[^0-9]/g, ''))
+        
+        if (patientId) {
+          const res = await patientApi.getPatientById(patientId)
+          patientInfo.value = res.data || {}
         } else {
-          // 创建新患者
-          savedPatient = await patientApi.createPatient(this.patientForm)
-          savedPatient = savedPatient.data
+          errorMessage.value = '无法从用户名中提取患者ID'
         }
-        this.selectedPatient = savedPatient
-        this.successMessage = '患者信息已保存'
-      } catch (error) {
-        console.error('保存患者失败:', error)
-        alert('保存患者失败，请稍后重试')
+      } catch (e) {
+        console.error('获取患者信息失败:', e)
+        errorMessage.value = e.response?.data?.message || '获取患者信息失败，请稍后重试'
       }
-    },
+    }
     
-    // 重置患者表单
-    resetPatientForm() {
-      this.selectedPatient = null
-      this.patientForm = {
-        patName: '',
-        patSurname: '',
-        patFirstname: '',
-        patAge: '',
-        patSex: '男',
-        patActor: '',
-        patContactPerson: '',
-        patTel: '',
-        patStatus: 'A'
+    // 先付款后挂号：跳转到付款页
+    const goPayFirst = async () => {
+      if (!patientInfo.value.patId) {
+        errorMessage.value = '患者信息未获取，请稍后重试'
+        return
       }
-    },
+      router.push({ 
+        path: '/pay', 
+        query: { 
+          patId: patientInfo.value.patId, 
+          opdDept: registerForm.value.opdDept 
+        } 
+      })
+    }
     
-    // 挂号
-    async registerPatient() {
-      try {
-        const now = new Date()
-        const opdData = {
-          opdDate: now,
-          opdTime: now,
-          opdDept: this.opdForm.opdDept,
-          patient: {
-            patId: this.selectedPatient.patId
-          },
-          opdStats: 1 // 待就诊
-        }
-        
-        await opdApi.createOPD(opdData)
-        this.successMessage = '挂号成功！患者已加入候诊列表'
-        
-        // 重置表单
-        this.resetPatientForm()
-        this.opdForm.opdDept = '内科'
-      } catch (error) {
-        console.error('挂号失败:', error)
-        alert('挂号失败，请稍后重试')
-      }
+    onMounted(() => {
+      fetchPatientInfo()
+    })
+    
+    return {
+      user,
+      role,
+      patientInfo,
+      registerForm,
+      errorMessage,
+      successMessage,
+      isLoading,
+      goPayFirst
     }
   }
 }
@@ -310,9 +167,10 @@ export default {
 
 <style scoped>
 .register-container {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
 }
 
 h1 {
@@ -328,14 +186,8 @@ h2 {
   padding-bottom: 10px;
 }
 
-h3 {
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.search-section,
-.patient-section,
-.opd-section {
+.patient-info-section,
+.register-section {
   background: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
@@ -343,9 +195,35 @@ h3 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.search-form,
-.patient-form,
-.opd-form {
+/* 患者信息样式 */
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.info-item strong {
+  color: #555;
+  margin-right: 8px;
+}
+
+/* 挂号表单样式 */
+.register-form {
   display: flex;
   flex-direction: column;
 }
@@ -400,8 +278,13 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background: #e0e0e0;
+}
+
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
 }
 
 button.primary {
@@ -409,45 +292,42 @@ button.primary {
   color: white;
 }
 
-button.primary:hover {
+button.primary:hover:not(:disabled) {
   background: #45a049;
 }
 
-.search-btn {
-  align-self: flex-end;
-  margin-bottom: 15px;
-}
-
-.search-results table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-results th,
-.search-results td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.search-results th {
-  background: #f5f5f5;
-  font-weight: bold;
-  color: #333;
-}
-
-.search-results tr:hover {
+/* 提示信息样式 */
+.not-logged-in,
+.not-patient {
+  text-align: center;
+  padding: 40px;
   background: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 40px;
 }
 
+.login-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.login-link:hover {
+  background: #45a049;
+}
+
+/* 消息样式 */
 .success-message {
   background: #d4edda;
   color: #155724;
   padding: 15px;
   border-radius: 4px;
-  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -460,5 +340,55 @@ button.primary:hover {
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: #f5c6cb;
+  color: #721c24;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 加载状态样式 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #4CAF50;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

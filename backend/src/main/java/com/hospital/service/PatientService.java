@@ -11,4 +11,5 @@ public interface PatientService {
     void deletePatient(Integer id);
     List<Patient> searchPatientsByPatName(String patName);
     List<Patient> searchPatients(Integer id, String name);
+    Patient getPatientByUserId(Integer userId);
 }

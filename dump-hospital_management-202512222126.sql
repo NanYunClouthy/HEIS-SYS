@@ -16,6 +16,64 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admin` (
+  `admin_id` int NOT NULL AUTO_INCREMENT,
+  `admin_name` varchar(50) NOT NULL,
+  `admin_role` varchar(50) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`admin_id`),
+  UNIQUE KEY `UK_hawikyhwwfvbnog5byokutpff` (`user_id`),
+  CONSTRAINT `FK8ahhk8vqegfrt6pd1p9i03aej` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,'李管理员','系统管理员',3);
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `doctor`
+--
+
+DROP TABLE IF EXISTS `doctor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `doctor` (
+  `doc_id` int NOT NULL AUTO_INCREMENT,
+  `doc_dept` varchar(50) NOT NULL,
+  `doc_name` varchar(50) NOT NULL,
+  `doc_specialty` varchar(100) DEFAULT NULL,
+  `doc_title` varchar(50) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`doc_id`),
+  UNIQUE KEY `UK_3q0j5r6i4e9k3afhypo6uljph` (`user_id`),
+  CONSTRAINT `FK9roto9ydtnjfkixvexq5vxyl5` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `doctor`
+--
+
+LOCK TABLES `doctor` WRITE;
+/*!40000 ALTER TABLE `doctor` DISABLE KEYS */;
+INSERT INTO `doctor` VALUES (1,'内科','王医生','心血管疾病','主治医师',2);
+/*!40000 ALTER TABLE `doctor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `drug_liquid`
 --
 
@@ -118,7 +176,7 @@ CREATE TABLE `opd` (
   PRIMARY KEY (`OPD_ID`),
   KEY `OPD_PAT_ID` (`OPD_PAT_ID`),
   CONSTRAINT `opd_ibfk_1` FOREIGN KEY (`OPD_PAT_ID`) REFERENCES `patient` (`PAT_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖琛';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖琛';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +185,7 @@ CREATE TABLE `opd` (
 
 LOCK TABLES `opd` WRITE;
 /*!40000 ALTER TABLE `opd` DISABLE KEYS */;
-INSERT INTO `opd` VALUES (1,'2025-12-18 15:18:43','2025-12-18 15:18:43','内科',1,1);
+INSERT INTO `opd` VALUES (1,'2025-12-18 15:18:43','2025-12-18 15:18:43','内科',1,3),(2,'2025-12-19 09:10:58','2025-12-19 09:10:58','内科',1,2),(3,'2025-12-19 10:30:12','2025-12-19 10:30:12','内科',2,1),(4,'2025-12-19 10:32:06','2025-12-19 10:32:06','内科',1,1);
 /*!40000 ALTER TABLE `opd` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +210,7 @@ CREATE TABLE `opd_visit_history` (
   PRIMARY KEY (`VIS_ID`),
   KEY `PAT_ID` (`PAT_ID`),
   CONSTRAINT `opd_visit_history_ibfk_1` FOREIGN KEY (`PAT_ID`) REFERENCES `patient` (`PAT_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖灏辫瘖鍘嗗彶琛';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖灏辫瘖鍘嗗彶琛';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +219,7 @@ CREATE TABLE `opd_visit_history` (
 
 LOCK TABLES `opd_visit_history` WRITE;
 /*!40000 ALTER TABLE `opd_visit_history` DISABLE KEYS */;
-INSERT INTO `opd_visit_history` VALUES (1,1,1,'患者主诉头痛、发热','上呼吸道感染','医生A','2025-12-18 15:18:43','医生A','2025-12-18 15:18:43',NULL);
+INSERT INTO `opd_visit_history` VALUES (1,1,1,'患者主诉头痛、发热','上呼吸道感染','医生A','2025-12-18 15:18:43','医生A','2025-12-18 15:18:43',NULL),(2,1,1,'123123','323232','王医生','2025-12-22 20:36:52','王医生','2025-12-22 20:36:52','123123');
 /*!40000 ALTER TABLE `opd_visit_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,7 +241,10 @@ CREATE TABLE `patient` (
   `PAT_CONTACT_PERSON` varchar(50) NOT NULL COMMENT '鑱旂郴浜哄憳',
   `PAT_TEL` varchar(20) NOT NULL COMMENT '鑱旂郴鐢佃瘽',
   `PAT_STATUS` char(1) NOT NULL COMMENT '鎮ｈ?鐘舵?',
-  PRIMARY KEY (`PAT_ID`)
+  `user_id` int DEFAULT NULL,
+  PRIMARY KEY (`PAT_ID`),
+  KEY `patient_user_FK` (`user_id`),
+  CONSTRAINT `patient_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='鎮ｈ?琛';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -193,8 +254,89 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
-INSERT INTO `patient` VALUES (1,'张三','张','三',30,'男','患者','张三','13800138000','A'),(2,'李四','李','四',25,'女','患者','李四','13900139000','A');
+INSERT INTO `patient` VALUES (1,'张三','张','三',30,'男','患者','张三','13800138000','A',1),(2,'李四','李','四',25,'女','患者','李四','13900139000','A',NULL);
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `role` (
+  `role_id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `UK_iubw515ff0ugtm28p8g3myt0h` (`role_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (3,'ROLE_ADMIN'),(2,'ROLE_DOCTOR'),(1,'ROLE_PATIENT');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `status` char(1) NOT NULL DEFAULT 'A',
+  `username` varchar(50) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `UK_sb8bbouer5wak8vyiiy4pf2bx` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'patient1@example.com','$2a$10$LcLOTlic7eQ70TDt7grAH.Xfrh0ZI/KYufVrqMG7VCkndjQFBpKEG','13800138000','A','patient1'),(2,'doctor1@example.com','$2a$10$unmhCpL8xeEWliGPmwfatu8TCeIaHj3cEBURrDdJmtgPT2JEzXKjK','13900139000','A','doctor1'),(3,'admin1@example.com','$2a$10$5tbnxcAYzNdSaN37KKbGoe/yeN8WJMGWgCgD8NnliimW9dMn9Yv4G','13700137000','A','admin1');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_role`
+--
+
+DROP TABLE IF EXISTS `user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_role` (
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `FKa68196081fvovjhkek5m97n3y` (`role_id`),
+  CONSTRAINT `FK859n2jvi8ivhui0rl0esws6o` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FKa68196081fvovjhkek5m97n3y` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_role`
+--
+
+LOCK TABLES `user_role` WRITE;
+/*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
+INSERT INTO `user_role` VALUES (1,1),(2,2),(3,3);
+/*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -210,4 +352,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-19  8:55:56
+-- Dump completed on 2025-12-22 21:26:04

@@ -17,6 +17,8 @@ public class PatientController {
 
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private com.hospital.repository.UserRepository userRepository;
 
     // 获取所有患者
     @GetMapping
@@ -74,5 +76,23 @@ public class PatientController {
             @RequestParam(required = false, defaultValue = "") String name) {
         List<Patient> patients = patientService.searchPatients(id, name);
         return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyPatientProfile() {
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String username = authentication.getName();
+        com.hospital.entity.User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Patient patient = patientService.getPatientByUserId(user.getUserId());
+        if (patient == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 }
