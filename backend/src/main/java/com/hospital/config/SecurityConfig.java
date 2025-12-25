@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
             .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/opds").hasAnyRole("PATIENT","DOCTOR","ADMIN")
+                .antMatchers(HttpMethod.POST, "/opds").hasAnyRole("PATIENT", "DOCTOR", "ADMIN")
                 .antMatchers("/patients/**").hasAnyRole("PATIENT", "DOCTOR", "ADMIN")
                 .antMatchers("/opds/**").hasAnyRole("DOCTOR", "ADMIN")
                 .antMatchers("/opd-visit-histories/**").hasAnyRole("DOCTOR", "ADMIN", "PATIENT")

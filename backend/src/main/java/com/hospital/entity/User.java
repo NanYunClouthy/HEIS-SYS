@@ -3,6 +3,7 @@ package com.hospital.entity;
 import javax.persistence.*;
 import lombok.Data;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @Entity
@@ -34,5 +35,6 @@ public class User {
         joinColumns = @JoinColumn(name = "USER_ID"),
         inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
     )
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private Set<Role> roles;
 }

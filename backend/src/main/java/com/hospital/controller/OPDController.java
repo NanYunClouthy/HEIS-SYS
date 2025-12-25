@@ -1,7 +1,9 @@
 package com.hospital.controller;
 
 import com.hospital.entity.OPD;
+import com.hospital.entity.Patient;
 import com.hospital.service.OPDService;
+import com.hospital.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@ public class OPDController {
 
     @Autowired
     private OPDService opdService;
+
+    @Autowired
+    private PatientService patientService;
 
     // 获取所有OPD记录
     @GetMapping
@@ -35,9 +40,33 @@ public class OPDController {
 
     // 创建OPD记录（挂号）
     @PostMapping
-    public ResponseEntity<OPD> createOPD(@RequestBody OPD opd) {
-        OPD savedOPD = opdService.saveOPD(opd);
-        return new ResponseEntity<>(savedOPD, HttpStatus.CREATED);
+    public ResponseEntity<?> createOPD(@RequestBody OPD requestOpd) {
+        try {
+            OPD newOpd = new OPD();
+            newOpd.setOpdDate(requestOpd.getOpdDate());
+            newOpd.setOpdTime(requestOpd.getOpdTime());
+            newOpd.setOpdDept(requestOpd.getOpdDept());
+            // 如果请求中未提供状态，默认为1
+            newOpd.setOpdStats(requestOpd.getOpdStats() != null ? requestOpd.getOpdStats() : 1);
+
+            // 确保Patient对象是从数据库加载的完整实体
+            if (requestOpd.getPatient() != null && requestOpd.getPatient().getPatId() != null) {
+                Optional<Patient> patientOpt = patientService.getPatientById(requestOpd.getPatient().getPatId());
+                if (patientOpt.isPresent()) {
+                    newOpd.setPatient(patientOpt.get());
+                } else {
+                    return new ResponseEntity<>("挂号失败: 找不到指定的患者信息", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>("挂号失败: 患者信息缺失", HttpStatus.BAD_REQUEST);
+            }
+            
+            OPD savedOPD = opdService.saveOPD(newOpd);
+            return new ResponseEntity<>(savedOPD, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("挂号失败: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 获取待就诊患者列表

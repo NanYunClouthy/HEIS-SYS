@@ -116,16 +116,8 @@ export default {
       if (!user || role !== 'PATIENT') return
       
       try {
-        // 从用户名中提取患者ID，例如 'pation1' -> 1
-        const username = user.username || ''
-        const patientId = parseInt(username.replace(/[^0-9]/g, ''))
-        
-        if (patientId) {
-          const res = await patientApi.getPatientById(patientId)
-          patientInfo.value = res.data || {}
-        } else {
-          errorMessage.value = '无法从用户名中提取患者ID'
-        }
+        const res = await patientApi.getMe()
+        patientInfo.value = res.data || {}
       } catch (e) {
         console.error('获取患者信息失败:', e)
         errorMessage.value = e.response?.data?.message || '获取患者信息失败，请稍后重试'

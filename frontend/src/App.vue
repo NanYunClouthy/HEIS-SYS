@@ -4,7 +4,7 @@
       <h1>医院管理系统</h1>
       <nav>
         <!-- 公共导航 -->
-        <router-link v-if="isLoggedIn" to="/">首页</router-link>
+        
         
         <!-- 患者导航 -->
         <router-link v-if="hasRole('PATIENT')" to="/my-center">个人中心</router-link>
@@ -17,6 +17,7 @@
         
         <!-- 管理员导航 -->
         <router-link v-if="hasRole('ADMIN')" to="/admin">管理后台</router-link>
+        <router-link v-if="hasRole('ADMIN')" to="/">患者管理</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/doctors">医生管理</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/waiting-list">候诊列表</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/visit-history">就诊记录</router-link>

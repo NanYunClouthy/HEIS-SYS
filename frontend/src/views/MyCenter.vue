@@ -134,6 +134,7 @@ export default {
       try {
         const res = await patientApi.getMe()
         patientInfo.value = res.data || {}
+        // 不再自动加载就诊记录，该功能已移除
       } catch (e) {
         console.error('获取患者信息失败:', e)
         errorMessage.value = e.response?.data?.message || '获取患者信息失败，请稍后重试'

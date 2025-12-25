@@ -3,6 +3,7 @@ package com.hospital.entity;
 import javax.persistence.*;
 import lombok.Data;
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @Entity

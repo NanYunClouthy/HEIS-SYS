@@ -158,14 +158,22 @@
             </div>
             <div class="form-group">
               <label for="docDept">科室</label>
-              <input 
-                type="text" 
+              <select 
                 id="docDept" 
                 v-model="registerForm.docDept" 
-                placeholder="请输入科室"
-                required
+                required 
                 :disabled="isLoading"
               >
+                <option value="">请选择科室</option>
+                <option value="内科">内科</option>
+                <option value="外科">外科</option>
+                <option value="儿科">儿科</option>
+                <option value="妇产科">妇产科</option>
+                <option value="眼科">眼科</option>
+                <option value="耳鼻喉科">耳鼻喉科</option>
+                <option value="口腔科">口腔科</option>
+                <option value="皮肤科">皮肤科</option>
+              </select>
             </div>
           </div>
           <div class="form-row">
