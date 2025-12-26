@@ -335,6 +335,7 @@ export default {
       role,
       visitHistories,
       selectedVisit,
+      selectedPrescriptions,
       visitForm,
       successMessage,
       errorMessage,
