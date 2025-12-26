@@ -9,6 +9,7 @@ import MyCenter from '../views/MyCenter.vue'
 import Pay from '../views/Pay.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import Doctors from '../views/Doctors.vue'
+import DrugManagement from '../views/DrugManagement.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +72,12 @@ const router = createRouter({
       path: '/doctors',
       name: 'doctors',
       component: Doctors,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/admin/drugs',
+      name: 'drugManagement',
+      component: DrugManagement,
       meta: { requiresAuth: true }
     }
   ]

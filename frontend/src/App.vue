@@ -20,6 +20,7 @@
         <router-link v-if="hasRole('ADMIN')" to="/">患者管理</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/doctors">医生管理</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/waiting-list">候诊列表</router-link>
+        <router-link v-if="hasRole('ADMIN')" to="/admin/drugs">药品管理</router-link>
         <router-link v-if="hasRole('ADMIN')" to="/visit-history">就诊记录</router-link>
         
         <!-- 登录/注销按钮 -->

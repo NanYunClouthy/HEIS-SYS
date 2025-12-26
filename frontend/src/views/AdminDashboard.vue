@@ -14,6 +14,10 @@
         <h2>就诊记录</h2>
         <router-link class="primary" to="/visit-history">查看就诊记录</router-link>
       </div>
+      <div class="card">
+        <h2>药品管理</h2>
+        <router-link class="primary" to="/admin/drugs">管理库存</router-link>
+      </div>
     </div>
   </div>
 </template>
