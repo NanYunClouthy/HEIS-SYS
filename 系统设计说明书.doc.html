@@ -1,0 +1,573 @@
+<!DOCTYPE html><html><head>
+      <title>系统设计说明书.doc</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\L1186\.trae\extensions\shd101wyy.markdown-preview-enhanced-0.8.20\crossnote\dependencies\katex\katex.min.css">
+      
+      
+      <script type="text/javascript" src="file:///c:\Users\L1186\.trae\extensions\shd101wyy.markdown-preview-enhanced-0.8.20\crossnote\dependencies\mermaid\mermaid.min.js" charset="UTF-8"></script>
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="系统设计说明书">系统设计说明书 </h1>
+<h2 id="目-录">目 录 </h2>
+<ol>
+<li><a href="#1-%E7%BC%96%E5%86%99%E7%9B%AE%E7%9A%84">编写目的</a></li>
+<li><a href="#2-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%BF%B0">项目概述</a></li>
+<li><a href="#3-%E7%B3%BB%E7%BB%9F%E5%90%84%E4%B8%AA%E6%A8%A1%E5%9D%97%E5%8A%9F%E8%83%BD%E7%AE%80%E8%BF%B0">系统各个模块功能简述</a></li>
+<li><a href="#4-%E7%B3%BB%E7%BB%9F%E5%90%84%E4%B8%AA%E6%A8%A1%E5%9D%97%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE">系统各个模块业务流程图</a></li>
+<li><a href="#5-%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1">系统数据库设计</a></li>
+<li><a href="#6-%E6%80%BB%E7%BB%93">总结</a></li>
+</ol>
+<h2 id="1-编写目的">1 编写目的 </h2>
+<p>本文档明确定义了门诊系统的界面需求和算法设计，是设计人员进行详细设计和测试人员进行系统测试的主要依据。</p>
+<h3 id="11-背景">1.1 背景 </h3>
+<p>随着社会的进步，信息技术的不断发展，传统的医院管理模式不再适应现在高速发展的现代化医院，甚至对医院的高速发展还会带来一定阻碍，主要体现在医院过多繁杂的程序上面浪费了大量的时间、人力和物力，虽然医院在管理上面投入不菲，但效果甚微，达不到理想的效果。为此特提出《门诊系统》的调研与开发，以改变现有的门诊流程，提高效率。</p>
+<h3 id="12-读者对象">1.2 读者对象 </h3>
+<ul>
+<li>项目管理人员</li>
+<li>业务需求人员</li>
+<li>系统分析人员</li>
+<li>系统设计人员</li>
+<li>系统开发人员</li>
+<li>系统测试人员</li>
+</ul>
+<h3 id="13-术语与缩写解释">1.3 术语与缩写解释 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">缩写、术语</th>
+<th style="text-align:left">解 释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">PP</td>
+<td style="text-align:left">项目规划，Project Planning</td>
+</tr>
+<tr>
+<td style="text-align:left">HIS</td>
+<td style="text-align:left">医院信息系统，Hospital Information System</td>
+</tr>
+<tr>
+<td style="text-align:left">OPD</td>
+<td style="text-align:left">门诊部，Outpatient Department</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-项目概述">2 项目概述 </h2>
+<h3 id="21-软件系统的目标">2.1 软件系统的目标 </h3>
+<p>系统目前实现了 <strong>患者管理</strong>、<strong>医生管理</strong> 和 <strong>门诊挂号</strong> 模块，作为医院信息管理系统（HIS）的核心基础模块。</p>
+<p>系统采用前后端分离架构，支持患者信息的全生命周期管理，方便医护人员快速访问和维护患者数据。主要功能模块包括：</p>
+<ul>
+<li><strong>患者管理</strong>：注册、登录、信息查询与修改。</li>
+<li><strong>医生管理</strong>：医生信息维护、排班与候诊管理。</li>
+<li><strong>门诊挂号</strong>：患者自助挂号、查询挂号记录、医生叫号/过号。</li>
+<li><strong>就诊记录</strong>：医生录入诊断结果、病历描述。</li>
+</ul>
+<h3 id="22-软件系统中的角色">2.2 软件系统中的角色 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">角色名称</th>
+<th style="text-align:left">工作简述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>系统管理员 (ADMIN)</strong></td>
+<td style="text-align:left">负责系统的配置、维护、用户管理、医生信息管理等。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>门诊医生 (DOCTOR)</strong></td>
+<td style="text-align:left">负责患者的诊断、查看候诊列表、叫号、填写病历等医疗活动。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>患者 (PATIENT)</strong></td>
+<td style="text-align:left">注册个人信息、挂号、查询就诊记录、支付等。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-开发平台">2.3 开发平台 </h3>
+<ul>
+<li><strong>开发语言</strong>：Java (JDK 1.8+), JavaScript (ES6+)</li>
+<li><strong>后端框架</strong>：Spring Boot 2.7.18, Spring Data JPA, Spring Security</li>
+<li><strong>前端框架</strong>：Vue 3, Vite, Vue Router</li>
+<li><strong>数据库</strong>：MySQL 8.0</li>
+<li><strong>开发工具</strong>：VS Code, IntelliJ IDEA</li>
+<li><strong>应用服务器</strong>：Tomcat (Spring Boot Embedded)</li>
+</ul>
+<h3 id="24-系统总体架构">2.4 系统总体架构 </h3>
+<div class="mermaid">graph TD
+    User["用户 (Browser)"] --&gt; Frontend["前端 (Vue 3 + Vite)"]
+    Frontend --&gt; |REST API| Backend["后端 (Spring Boot)"]
+    Backend --&gt; |JPA/Hibernate| DB[("数据库 MySQL")]
+    
+    subgraph Frontend_Components ["前端组件"]
+        Login
+        Register
+        PatientCenter
+        DoctorDashboard
+        AdminPanel
+    end
+    
+    subgraph Backend_Services ["后端服务"]
+        AuthService
+        PatientService
+        DoctorService
+        OPDService
+        VisitHistoryService
+    end
+</div><h2 id="3-系统各个模块功能简述">3 系统各个模块功能简述 </h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">模块</th>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">子功能</th>
+<th style="text-align:left">功能简述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>患者管理子系统</strong></td>
+<td style="text-align:left">患者信息管理</td>
+<td style="text-align:left">注册/登录</td>
+<td style="text-align:left">用户注册、登录、JWT认证</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">个人信息管理</td>
+<td style="text-align:left">查看和修改个人基本信息（姓名、联系方式等）</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">就诊历史查询</td>
+<td style="text-align:left">查询个人的历史就诊记录和诊断结果</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>门诊管理子系统</strong></td>
+<td style="text-align:left">门诊挂号管理</td>
+<td style="text-align:left">在线挂号</td>
+<td style="text-align:left">选择科室进行挂号（生成OPD记录）</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">挂号查询</td>
+<td style="text-align:left">查询挂号状态（排队中、就诊中、已完成等）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>医生工作站</strong></td>
+<td style="text-align:left">候诊管理</td>
+<td style="text-align:left">候诊列表</td>
+<td style="text-align:left">查看本科室待就诊患者列表</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">叫号/过号</td>
+<td style="text-align:left">对患者进行叫号或过号操作</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">就诊管理</td>
+<td style="text-align:left">就诊记录录入</td>
+<td style="text-align:left">填写患者主诉、诊断结果、病历描述</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">历史记录查看</td>
+<td style="text-align:left">查看患者过往病历</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>系统管理</strong></td>
+<td style="text-align:left">用户管理</td>
+<td style="text-align:left">用户维护</td>
+<td style="text-align:left">管理员管理医生、患者账户</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">医生信息管理</td>
+<td style="text-align:left">新增、修改、删除医生信息</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-系统各个模块业务流程图">4 系统各个模块业务流程图 </h2>
+<h3 id="41-门诊挂号与就诊流程">4.1 门诊挂号与就诊流程 </h3>
+<div class="mermaid">sequenceDiagram
+    participant P as 患者
+    participant F as 前端界面
+    participant B as 后端服务
+    participant DB as 数据库
+    participant D as 医生
+
+    Note over P, F: 挂号阶段
+    P-&gt;&gt;F: 登录系统
+    F-&gt;&gt;B: 验证用户凭证
+    B--&gt;&gt;F: 返回Token
+    P-&gt;&gt;F: 选择科室并挂号
+    F-&gt;&gt;B: 创建挂号记录 (POST /api/opds)
+    B-&gt;&gt;DB: 插入OPD记录 (Status=1)
+    DB--&gt;&gt;B: 成功
+    B--&gt;&gt;F: 挂号成功
+    
+    Note over D, DB: 就诊阶段
+    D-&gt;&gt;F: 查看候诊列表
+    F-&gt;&gt;B: 获取待诊患者 (GET /api/opds/waiting)
+    B-&gt;&gt;DB: 查询Status=1的记录
+    DB--&gt;&gt;B: 返回列表
+    B--&gt;&gt;F: 显示列表
+    D-&gt;&gt;F: 点击"叫号"
+    F-&gt;&gt;B: 更新状态 (PUT /api/opds/{id}/call)
+    B-&gt;&gt;DB: 更新Status=2
+    
+    D-&gt;&gt;F: 填写诊断结果并提交
+    F-&gt;&gt;B: 保存就诊记录 (POST /api/visit-history)
+    B-&gt;&gt;DB: 插入opd_visit_history
+    DB--&gt;&gt;B: 成功
+    B--&gt;&gt;F: 保存成功
+</div><h2 id="5-系统数据库设计">5 系统数据库设计 </h2>
+<h3 id="51-er图设计">5.1 ER图设计 </h3>
+<div class="mermaid">erDiagram
+    USER {
+        int user_id PK
+        string username
+        string password
+        string role
+    }
+    PATIENT {
+        int pat_id PK
+        string pat_name
+        string pat_contact
+        int user_id FK
+    }
+    DOCTOR {
+        int doc_id PK
+        string doc_name
+        string doc_dept
+        string doc_title
+        int user_id FK
+    }
+    ADMIN {
+        int admin_id PK
+        string admin_name
+        int user_id FK
+    }
+    OPD {
+        int opd_id PK
+        datetime opd_time
+        string opd_dept
+        int opd_stats
+        int pat_id FK
+    }
+    OPD_VISIT_HISTORY {
+        int vis_id PK
+        string vis_diagnosis
+        string vis_case_desc
+        int pat_id FK
+        int vis_doc_id FK
+    }
+
+    USER ||--o| PATIENT : "关联"
+    USER ||--o| DOCTOR : "关联"
+    USER ||--o| ADMIN : "关联"
+    PATIENT ||--o{ OPD : "挂号"
+    DOCTOR ||--o{ OPD_VISIT_HISTORY : "创建"
+    PATIENT ||--o{ OPD_VISIT_HISTORY : "拥有"
+    OPD }|--|| PATIENT : "属于"
+</div><h3 id="52-数据库表设计">5.2 数据库表设计 </h3>
+<h4 id="521-用户表-user">5.2.1 用户表 (user) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">user_id</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键，自增</td>
+</tr>
+<tr>
+<td style="text-align:left">username</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">用户名，唯一</td>
+</tr>
+<tr>
+<td style="text-align:left">password</td>
+<td style="text-align:left">varchar(255)</td>
+<td style="text-align:left">加密密码</td>
+</tr>
+<tr>
+<td style="text-align:left">email</td>
+<td style="text-align:left">varchar(100)</td>
+<td style="text-align:left">邮箱</td>
+</tr>
+<tr>
+<td style="text-align:left">phone</td>
+<td style="text-align:left">varchar(20)</td>
+<td style="text-align:left">电话</td>
+</tr>
+<tr>
+<td style="text-align:left">status</td>
+<td style="text-align:left">char(1)</td>
+<td style="text-align:left">状态 (A: Active)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="522-角色表-role">5.2.2 角色表 (role) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">role_id</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键</td>
+</tr>
+<tr>
+<td style="text-align:left">role_name</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">角色名 (ROLE_ADMIN, ROLE_DOCTOR, ROLE_PATIENT)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="523-患者表-patient">5.2.3 患者表 (patient) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">PAT_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键，病历号</td>
+</tr>
+<tr>
+<td style="text-align:left">PAT_NAME</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">姓名</td>
+</tr>
+<tr>
+<td style="text-align:left">PAT_AGE</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">年龄</td>
+</tr>
+<tr>
+<td style="text-align:left">PAT_SEX</td>
+<td style="text-align:left">char(1)</td>
+<td style="text-align:left">性别</td>
+</tr>
+<tr>
+<td style="text-align:left">PAT_TEL</td>
+<td style="text-align:left">varchar(20)</td>
+<td style="text-align:left">联系电话</td>
+</tr>
+<tr>
+<td style="text-align:left">user_id</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">关联用户ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="524-医生表-doctor">5.2.4 医生表 (doctor) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">doc_id</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键</td>
+</tr>
+<tr>
+<td style="text-align:left">doc_name</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">姓名</td>
+</tr>
+<tr>
+<td style="text-align:left">doc_dept</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">科室</td>
+</tr>
+<tr>
+<td style="text-align:left">doc_title</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">职称</td>
+</tr>
+<tr>
+<td style="text-align:left">user_id</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">关联用户ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="525-门诊挂号表-opd">5.2.5 门诊挂号表 (opd) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">OPD_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键，挂号单号</td>
+</tr>
+<tr>
+<td style="text-align:left">OPD_DATE</td>
+<td style="text-align:left">datetime</td>
+<td style="text-align:left">挂号日期</td>
+</tr>
+<tr>
+<td style="text-align:left">OPD_DEPT</td>
+<td style="text-align:left">varchar(50)</td>
+<td style="text-align:left">挂号科室</td>
+</tr>
+<tr>
+<td style="text-align:left">OPD_PAT_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">关联患者ID</td>
+</tr>
+<tr>
+<td style="text-align:left">OPD_STATS</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">状态 (1-挂号成功, 2-叫号, 3-过号)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="526-就诊记录表-opd_visit_history">5.2.6 就诊记录表 (opd_visit_history) </h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">VIS_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">主键</td>
+</tr>
+<tr>
+<td style="text-align:left">PAT_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">患者ID</td>
+</tr>
+<tr>
+<td style="text-align:left">VIS_DOC_ID</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">医生ID</td>
+</tr>
+<tr>
+<td style="text-align:left">VIS_CASE_DESC</td>
+<td style="text-align:left">text</td>
+<td style="text-align:left">病例描述</td>
+</tr>
+<tr>
+<td style="text-align:left">VIS_DIAGNOSIS</td>
+<td style="text-align:left">varchar(200)</td>
+<td style="text-align:left">诊断结果</td>
+</tr>
+<tr>
+<td style="text-align:left">VIS_CREATED_DATE</td>
+<td style="text-align:left">datetime</td>
+<td style="text-align:left">创建时间</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-总结">6	总结 </h2>
+<h3 id="61-系统未完成的功能">6.1	系统未完成的功能 </h3>
+<p>更多的登陆人员角色的模块需要完善</p>
+<h3 id="62-心得与体会">6.2	心得与体会 </h3>
+<p>通过这个项目，我不仅掌握了医院信息系统的基本架构和功能模块，还提高了数据库设计和系统分析能力。同时，也认识到在实际项目中，需要充分理解业务需求，才能设计出符合实际应用场景的系统。这个项目为我今后参与更复杂的信息系统开发积累了宝贵经验。</p>
+
+      </div>
+      
+      
+    
+    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+}
+</script>
+    
+    
+    
+  
+    </body></html>

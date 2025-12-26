@@ -30,35 +30,33 @@
     
     <!-- 患者详细信息 -->
     <div class="section" v-if="role === 'PATIENT'">
-      <h2>患者信息</h2>
-      <div class="patient-info">
-        <div class="info-row">
-          <div class="info-item">
-            <strong>病历号：</strong>{{ patientInfo?.patId || '未获取' }}
+      <!-- 患者信息 -->
+      <div class="patient-info-section" v-if="patientInfo && patientInfo.patId">
+        <h2>患者信息</h2>
+        <div class="patient-info">
+          <div class="info-row">
+            <div class="info-item">
+              <strong>病历号：</strong>{{ patientInfo.patId }}
+            </div>
+            <div class="info-item">
+              <strong>姓名：</strong>{{ patientInfo.patName }}
+            </div>
           </div>
-          <div class="info-item">
-            <strong>姓名：</strong>{{ patientInfo?.patName || '未获取' }}
+          <div class="info-row">
+            <div class="info-item">
+              <strong>性别：</strong>{{ patientInfo.patSex }}
+            </div>
+            <div class="info-item">
+              <strong>年龄：</strong>{{ patientInfo.patAge }}
+            </div>
           </div>
-        </div>
-        <div class="info-row">
-          <div class="info-item">
-            <strong>性别：</strong>{{ patientInfo?.patSex || '未获取' }}
-          </div>
-          <div class="info-item">
-            <strong>年龄：</strong>{{ patientInfo?.patAge || '未获取' }}
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="info-item">
-            <strong>联系电话：</strong>{{ patientInfo?.patTel || '未获取' }}
-          </div>
-          <div class="info-item">
-            <strong>联系人：</strong>{{ patientInfo?.patContactPerson || '未获取' }}
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="info-item">
-            <strong>状态：</strong>{{ patientInfo?.patStatus === 'A' ? '活跃' : '非活跃' }}
+          <div class="info-row">
+            <div class="info-item">
+              <strong>联系电话：</strong>{{ patientInfo.patTel }}
+            </div>
+            <div class="info-item">
+              <strong>联系人：</strong>{{ patientInfo.patContactPerson }}
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +132,7 @@ export default {
       try {
         const res = await patientApi.getMe()
         patientInfo.value = res.data || {}
-        // 不再自动加载就诊记录，该功能已移除
+        console.log('获取到的患者信息:', patientInfo.value)
       } catch (e) {
         console.error('获取患者信息失败:', e)
         errorMessage.value = e.response?.data?.message || '获取患者信息失败，请稍后重试'
@@ -176,9 +174,10 @@ export default {
     // 个人中心不再提供快速挂号
 
     onMounted(() => {
-      if (user?.role === 'PATIENT') {
+      console.log('MyCenter mounted, role:', role)
+      if (role === 'PATIENT') {
         fetchPatientInfo()
-      } else if (user?.role === 'DOCTOR') {
+      } else if (role === 'DOCTOR') {
         fetchDoctorInfo()
       }
     })
@@ -338,5 +337,68 @@ input:focus, select:focus {
   outline: none;
   border-color: #4CAF50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* 病历记录样式 */
+.history-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.history-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.history-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.visit-date {
+  color: #666;
+  font-size: 14px;
+}
+
+.visit-dept {
+  background: #e8f5e9;
+  color: #4CAF50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.card-body p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.card-footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f5f5f5;
+  font-size: 12px;
+  color: #999;
+  text-align: right;
 }
 </style>

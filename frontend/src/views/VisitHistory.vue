@@ -176,6 +176,7 @@
 import { ref, onMounted } from 'vue'
 import { visitApi } from '../api/visit'
 import { patientApi } from '../api/patient'
+import { prescriptionApi } from '../api/prescription'
 import axios from 'axios'
 
 export default {
@@ -185,6 +186,7 @@ export default {
     const role = (user?.role || '').toUpperCase()
     const visitHistories = ref([])
     const selectedVisit = ref(null)
+    const selectedPrescriptions = ref([]) // 存储当前选中的处方
     const visitForm = ref({
       visCaseDesc: '',
       visDiagnosis: '',
@@ -239,8 +241,15 @@ export default {
     }
     
     // 查看就诊记录详情
-    const viewVisitDetail = (visit) => {
+    const viewVisitDetail = async (visit) => {
       selectedVisit.value = visit
+      selectedPrescriptions.value = [] // 重置处方列表
+      try {
+        const res = await prescriptionApi.getPrescriptionsByVisitId(visit.visId)
+        selectedPrescriptions.value = res.data
+      } catch (e) {
+        console.error('获取处方详情失败:', e)
+      }
     }
     
     // 关闭详情
@@ -624,5 +633,33 @@ button:disabled {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.prescription-item {
+  margin-top: 15px;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.pres-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: bold;
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.pres-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pres-table th, .pres-table td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
 }
 </style>

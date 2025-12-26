@@ -81,6 +81,49 @@
           <label>备注</label>
           <textarea v-model="consultationForm.visNote" rows="3" placeholder="备注（可选）"></textarea>
         </div>
+
+        <!-- 处方开具区域 -->
+        <div class="prescription-section">
+          <h3>处方开具</h3>
+          <div class="add-drug-form">
+            <select v-model="selectedDrugId">
+              <option value="">请选择药品</option>
+              <option v-for="drug in drugs" :key="drug.drugId" :value="drug.drugId">
+                {{ drug.drugName }} (库存: {{ drug.drugStock }}) - ￥{{ drug.drugPrice }}
+              </option>
+            </select>
+            <input type="number" v-model.number="selectedQuantity" min="1" placeholder="数量">
+            <button class="add-btn" @click="addDrug" :disabled="!selectedDrugId || selectedQuantity < 1">添加药品</button>
+          </div>
+
+          <table v-if="prescriptionItems.length > 0" class="prescription-table">
+            <thead>
+              <tr>
+                <th>药品名称</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>小计</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in prescriptionItems" :key="index">
+                <td>{{ item.drugName }}</td>
+                <td>￥{{ item.drugPrice }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>￥{{ (item.drugPrice * item.quantity).toFixed(2) }}</td>
+                <td><button @click="removeDrug(index)" class="remove-btn">删除</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" style="text-align: right; font-weight: bold;">总计：</td>
+                <td colspan="2" style="font-weight: bold; color: #f44336;">￥{{ totalPrescriptionAmount }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
         <div class="actions">
           <button class="primary" @click="submitConsultation">保存并过号</button>
           <button class="warning" @click="skipPatient(currentPatient)">直接过号</button>
@@ -100,6 +143,8 @@
 import { opdApi } from '../api/opd'
 import { doctorApi } from '../api/doctor'
 import { visitApi } from '../api/visit'
+import { drugApi } from '../api/drug'
+import { prescriptionApi } from '../api/prescription'
 
 export default {
   name: 'WaitingList',
@@ -117,11 +162,24 @@ export default {
         visCaseDesc: '',
         visDiagnosis: '',
         visNote: ''
-      }
+      },
+      // 处方相关数据
+      drugs: [],
+      prescriptionItems: [],
+      selectedDrugId: '',
+      selectedQuantity: 1
+    }
+  },
+  computed: {
+    totalPrescriptionAmount() {
+      return this.prescriptionItems.reduce((total, item) => {
+        return total + (item.drugPrice * item.quantity)
+      }, 0).toFixed(2)
     }
   },
   mounted() {
     this.initDoctorDept()
+    this.fetchDrugs()
     // 设置自动刷新，每5秒刷新一次
     this.refreshInterval = setInterval(() => {
       this.fetchWaitingPatients()
@@ -192,10 +250,65 @@ export default {
         this.currentPatient = patient
         this.successMessage = `已叫号：${patient.patient.patName}，请编写就诊记录`
         this.consultationForm = { visCaseDesc: '', visDiagnosis: '', visNote: '' }
+        // 重置处方表单
+        this.prescriptionItems = []
+        this.selectedDrugId = ''
+        this.selectedQuantity = 1
+        // 重新获取药品列表以更新库存
+        this.fetchDrugs()
       } catch (error) {
         console.error('叫号失败:', error)
         this.errorMessage = '叫号失败: ' + (error.response?.data?.message || error.message)
       }
+    },
+    
+    // 获取药品列表
+    async fetchDrugs() {
+      try {
+        const response = await drugApi.getAllDrugs()
+        this.drugs = response.data
+      } catch (error) {
+        console.error('获取药品列表失败:', error)
+      }
+    },
+
+    // 添加药品到处方
+    addDrug() {
+      if (!this.selectedDrugId || this.selectedQuantity < 1) return
+      
+      const drug = this.drugs.find(d => d.drugId === this.selectedDrugId)
+      if (!drug) return
+
+      if (this.selectedQuantity > drug.drugStock) {
+        this.errorMessage = `库存不足，${drug.drugName} 当前库存仅剩 ${drug.drugStock}`
+        return
+      }
+      
+      // 检查是否已添加
+      const existingItem = this.prescriptionItems.find(item => item.drugId === drug.drugId)
+      if (existingItem) {
+        if (existingItem.quantity + this.selectedQuantity > drug.drugStock) {
+           this.errorMessage = `库存不足，${drug.drugName} 总数量不能超过 ${drug.drugStock}`
+           return
+        }
+        existingItem.quantity += this.selectedQuantity
+      } else {
+        this.prescriptionItems.push({
+          drugId: drug.drugId,
+          drugName: drug.drugName,
+          drugPrice: drug.drugPrice,
+          quantity: this.selectedQuantity
+        })
+      }
+      
+      this.selectedDrugId = ''
+      this.selectedQuantity = 1
+      this.errorMessage = ''
+    },
+
+    // 移除药品
+    removeDrug(index) {
+      this.prescriptionItems.splice(index, 1)
     },
     
     // 过号
@@ -219,6 +332,7 @@ export default {
       }
       this.errorMessage = ''
       try {
+        // 1. 创建就诊记录
         const now = new Date()
         const body = {
           patient: { patId: this.currentPatient.patient.patId },
@@ -231,13 +345,30 @@ export default {
           visLastModifiedDate: now,
           visNote: this.consultationForm.visNote || null
         }
-        await visitApi.create(body)
+        const visitResponse = await visitApi.create(body)
+        const visitId = visitResponse.data.visId
+
+        // 2. 如果有处方，创建处方
+        if (this.prescriptionItems.length > 0) {
+          const prescriptionBody = {
+            visId: visitId,
+            items: this.prescriptionItems.map(item => ({
+              drugId: item.drugId,
+              quantity: item.quantity
+            }))
+          }
+          await prescriptionApi.createPrescription(prescriptionBody)
+        }
+
+        // 3. 完成并过号
         await this.skipPatient(this.currentPatient)
-        this.successMessage = '就诊记录已保存并过号'
+        this.successMessage = '就诊记录及处方已保存'
         this.consultationForm = { visCaseDesc: '', visDiagnosis: '', visNote: '' }
+        this.prescriptionItems = []
+        this.fetchDrugs() // 更新库存显示
       } catch (error) {
-        console.error('保存就诊记录失败:', error)
-        this.errorMessage = '保存就诊记录失败: ' + (error.response?.data?.message || error.message)
+        console.error('保存失败:', error)
+        this.errorMessage = '保存失败: ' + (error.response?.data?.message || error.message)
       }
     }
   }
@@ -388,6 +519,78 @@ tr:hover {
 .current-patient strong {
   color: #333;
   margin-right: 10px;
+}
+
+.prescription-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.prescription-section h3 {
+  color: #555;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.add-drug-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.add-drug-form select {
+  flex: 2;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-drug-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-btn {
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.add-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.prescription-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.prescription-table th, .prescription-table td {
+  padding: 8px;
+  border: 1px solid #eee;
+  text-align: left;
+}
+
+.prescription-table th {
+  background-color: #f5f5f5;
+}
+
+.remove-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .success-message {
