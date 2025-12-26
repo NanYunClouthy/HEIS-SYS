@@ -69,6 +69,15 @@
               <option value="皮肤科">皮肤科</option>
             </select>
           </div>
+          <div class="form-group">
+            <label for="docId">选择医生 (可选)</label>
+            <select id="docId" v-model="registerForm.docId" :disabled="isLoading">
+              <option value="">随机分配</option>
+              <option v-for="doc in doctors" :key="doc.docId" :value="doc.docId">
+                {{ doc.docName }} ({{ doc.docTitle || '医师' }})
+              </option>
+            </select>
+          </div>
         </div>
         <div class="form-actions">
           <button type="submit" class="primary" :disabled="isLoading">确认挂号</button>
@@ -92,10 +101,11 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { patientApi } from '../api/patient'
 import { opdApi } from '../api/opd'
+import { doctorApi } from '../api/doctor'
 
 export default {
   name: 'Register',
@@ -105,12 +115,34 @@ export default {
     const role = (user?.role || '').toUpperCase()
     const patientInfo = ref({})
     const registerForm = ref({
-      opdDept: '内科'
+      opdDept: '内科',
+      docId: ''
     })
+    const doctors = ref([])
     const errorMessage = ref('')
     const successMessage = ref('')
     const isLoading = ref(false)
     
+    // 获取医生列表
+    const fetchDoctors = async () => {
+      if (!registerForm.value.opdDept) return
+      
+      try {
+        const res = await doctorApi.getDoctorsByDept(registerForm.value.opdDept)
+        doctors.value = res.data || []
+        registerForm.value.docId = '' // 重置选择的医生
+      } catch (e) {
+        console.error('获取医生列表失败:', e)
+        // 不显示错误，只是列表为空
+        doctors.value = []
+      }
+    }
+
+    // 监听科室变化
+    watch(() => registerForm.value.opdDept, () => {
+      fetchDoctors()
+    })
+
     // 获取患者信息
     const fetchPatientInfo = async () => {
       if (!user || role !== 'PATIENT') return
@@ -134,13 +166,15 @@ export default {
         path: '/pay', 
         query: { 
           patId: patientInfo.value.patId, 
-          opdDept: registerForm.value.opdDept 
+          opdDept: registerForm.value.opdDept,
+          docId: registerForm.value.docId
         } 
       })
     }
     
     onMounted(() => {
       fetchPatientInfo()
+      fetchDoctors()
     })
     
     return {
@@ -148,6 +182,7 @@ export default {
       role,
       patientInfo,
       registerForm,
+      doctors,
       errorMessage,
       successMessage,
       isLoading,

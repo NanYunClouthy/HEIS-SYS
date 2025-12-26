@@ -10,4 +10,5 @@ import java.util.List;
 public interface OPDRepository extends JpaRepository<OPD, Integer> {
     List<OPD> findByOpdStats(Integer opdStats);
     List<OPD> findByOpdDeptAndOpdStats(String opdDept, Integer opdStats);
+    List<OPD> findByDoctorDocIdAndOpdStats(Integer docId, Integer opdStats);
 }

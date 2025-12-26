@@ -11,5 +11,8 @@ const apiClient = axios.create({
 export const doctorApi = {
   me() {
     return apiClient.get('/doctors/me')
+  },
+  getDoctorsByDept(dept) {
+    return apiClient.get(`/doctors/dept/${dept}`)
   }
 }

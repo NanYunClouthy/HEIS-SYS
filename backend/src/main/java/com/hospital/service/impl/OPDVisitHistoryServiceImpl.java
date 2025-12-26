@@ -6,6 +6,7 @@ import com.hospital.service.OPDVisitHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,10 @@ public class OPDVisitHistoryServiceImpl implements OPDVisitHistoryService {
 
     @Override
     public OPDVisitHistory saveOPDVisitHistory(OPDVisitHistory opdVisitHistory) {
+        if (opdVisitHistory.getVisCreatedDate() == null) {
+            opdVisitHistory.setVisCreatedDate(new Date());
+        }
+        opdVisitHistory.setVisLastModifiedDate(new Date());
         return opdVisitHistoryRepository.save(opdVisitHistory);
     }
 
@@ -42,6 +47,6 @@ public class OPDVisitHistoryServiceImpl implements OPDVisitHistoryService {
 
     @Override
     public List<OPDVisitHistory> getOPDVisitHistoriesByDoctorId(Integer docId) {
-        return opdVisitHistoryRepository.findByVisDocId(docId);
+        return opdVisitHistoryRepository.findByDoctorDocId(docId);
     }
 }

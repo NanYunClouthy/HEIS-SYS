@@ -2,26 +2,12 @@
   <div class="waiting-list-container">
     <h1>医生候诊列表</h1>
     
-    <!-- 科室选择 -->
-    <div class="department-selector">
-      <label for="dept">选择科室：</label>
-      <select id="dept" v-model="selectedDept">
-        <option value="">所有科室</option>
-        <option value="内科">内科</option>
-        <option value="外科">外科</option>
-        <option value="儿科">儿科</option>
-        <option value="妇产科">妇产科</option>
-        <option value="眼科">眼科</option>
-        <option value="耳鼻喉科">耳鼻喉科</option>
-        <option value="口腔科">口腔科</option>
-        <option value="皮肤科">皮肤科</option>
-      </select>
-      <button @click="fetchWaitingPatients">刷新列表</button>
-    </div>
+    <!-- 科室选择 (已移除，自动绑定医生所属科室) -->
+    <!-- <div class="department-selector">...</div> -->
     
     <!-- 候诊列表 -->
     <div class="waiting-patients">
-      <h2>待就诊患者</h2>
+      <h2>待就诊患者 <button class="refresh-btn" @click="fetchWaitingPatients" :disabled="isLoading">刷新</button></h2>
       <div v-if="waitingPatients.length === 0" class="no-patients">
         暂无待就诊患者
       </div>
@@ -198,13 +184,11 @@ export default {
       try {
         const res = await doctorApi.me()
         this.doctorInfo = res.data
-        if (this.doctorInfo?.docDept) {
-          this.selectedDept = this.doctorInfo.docDept
-        }
+        // 直接获取该医生的候诊列表
         await this.fetchWaitingPatients()
       } catch (e) {
         console.error('获取医生信息失败:', e)
-        await this.fetchWaitingPatients()
+        this.errorMessage = '获取医生信息失败，无法加载候诊列表'
       } finally {
         this.isLoading = false
       }
@@ -227,12 +211,8 @@ export default {
       this.isLoading = true
       this.errorMessage = ''
       try {
-        let response
-        if (this.selectedDept) {
-          response = await opdApi.getWaitingPatientsByDept(this.selectedDept)
-        } else {
-          response = await opdApi.getWaitingPatients()
-        }
+        // 调用新的接口，获取当前登录医生的候诊列表
+        const response = await opdApi.getWaitingPatientsByDoctor()
         this.waitingPatients = response.data
       } catch (error) {
         console.error('获取候诊列表失败:', error)
@@ -333,16 +313,13 @@ export default {
       this.errorMessage = ''
       try {
         // 1. 创建就诊记录
-        const now = new Date()
         const body = {
           patient: { patId: this.currentPatient.patient.patId },
-          visDocId: this.doctorInfo.docId,
+          doctor: { docId: this.doctorInfo.docId },
           visCaseDesc: this.consultationForm.visCaseDesc,
           visDiagnosis: this.consultationForm.visDiagnosis,
           visCreatedBy: this.doctorInfo.docName || 'doctor',
-          visCreatedDate: now,
           visLastModifiedBy: this.doctorInfo.docName || 'doctor',
-          visLastModifiedDate: now,
           visNote: this.consultationForm.visNote || null
         }
         const visitResponse = await visitApi.create(body)
@@ -432,6 +409,21 @@ h2 {
 
 .department-selector button:hover {
   background: #45a049;
+}
+
+.refresh-btn {
+  font-size: 14px;
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.refresh-btn:disabled {
+  background-color: #ccc;
 }
 
 .waiting-patients, .current-patient {

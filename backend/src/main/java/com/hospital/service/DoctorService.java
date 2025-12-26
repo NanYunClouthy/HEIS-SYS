@@ -10,4 +10,5 @@ public interface DoctorService {
     Doctor saveDoctor(Doctor doctor);
     void deleteDoctor(Integer id);
     Doctor getDoctorByUserId(Integer userId);
+    List<Doctor> getDoctorsByDept(String dept);
 }

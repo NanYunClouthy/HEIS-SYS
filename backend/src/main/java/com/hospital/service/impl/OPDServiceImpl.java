@@ -45,6 +45,11 @@ public class OPDServiceImpl implements OPDService {
     }
 
     @Override
+    public List<OPD> getWaitingPatientsByDoctor(Integer docId, Integer status) {
+        return opdRepository.findByDoctorDocIdAndOpdStats(docId, status);
+    }
+
+    @Override
     public OPD callPatient(Integer id) {
         Optional<OPD> optionalOPD = opdRepository.findById(id);
         if (optionalOPD.isPresent()) {

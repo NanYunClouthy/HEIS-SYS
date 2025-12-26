@@ -67,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/patients/**").hasAnyRole("PATIENT", "DOCTOR", "ADMIN")
                 .antMatchers("/opds/**").hasAnyRole("DOCTOR", "ADMIN")
                 .antMatchers("/opd-visit-histories/**").hasAnyRole("DOCTOR", "ADMIN", "PATIENT")
+                .antMatchers(HttpMethod.GET, "/doctors/**").hasAnyRole("PATIENT", "DOCTOR", "ADMIN")
                 .antMatchers("/doctors/**").hasAnyRole("DOCTOR", "ADMIN")
                 .antMatchers("/admins/**").hasRole("ADMIN")
                 .anyRequest().authenticated()

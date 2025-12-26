@@ -10,6 +10,7 @@ public interface OPDService {
     OPD saveOPD(OPD opd);
     List<OPD> getWaitingPatients(Integer status);
     List<OPD> getWaitingPatientsByDept(String dept, Integer status);
+    List<OPD> getWaitingPatientsByDoctor(Integer docId, Integer status);
     OPD callPatient(Integer id);
     OPD skipPatient(Integer id);
 }

@@ -39,4 +39,9 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor getDoctorByUserId(Integer userId) {
         return doctorRepository.findByUserUserId(userId);
     }
+
+    @Override
+    public List<Doctor> getDoctorsByDept(String dept) {
+        return doctorRepository.findByDocDept(dept);
+    }
 }

@@ -44,7 +44,7 @@
             >
               <td>{{ visit.visId }}</td>
               <td>{{ visit.patient?.patName || '未知' }}</td>
-              <td>{{ visit.opd?.opdDept || '未知' }}</td>
+              <td>{{ visit.doctor?.docDept || '未知' }}</td>
               <td>{{ visit.visDiagnosis || '暂无' }}</td>
               <td>{{ formatDate(visit.visCreatedDate) }}</td>
               <td>
@@ -97,10 +97,10 @@
         
         <div class="detail-row">
           <div class="detail-item">
-            <strong>科室：</strong>{{ selectedVisit.opd?.opdDept || '未知' }}
+            <strong>科室：</strong>{{ selectedVisit.doctor?.docDept || '未知' }}
           </div>
           <div class="detail-item">
-            <strong>挂号状态：</strong>{{ selectedVisit.opd?.opdStats === 1 ? '待就诊' : selectedVisit.opd?.opdStats === 2 ? '已就诊' : '已完成' }}
+            <strong>主治医生：</strong>{{ selectedVisit.doctor?.docName || '未知' }}
           </div>
         </div>
         
@@ -114,6 +114,35 @@
           <div class="detail-text">{{ selectedVisit.visDiagnosis || '暂无诊断' }}</div>
         </div>
         
+        <div class="detail-section" v-if="selectedPrescriptions && selectedPrescriptions.length > 0">
+          <h3>处方信息</h3>
+          <div v-for="pres in selectedPrescriptions" :key="pres.presId" class="prescription-item">
+             <div class="pres-header">
+                <span>处方ID: {{ pres.presId }}</span>
+                <span>总金额: ¥{{ pres.presTotalAmount }}</span>
+                <span>状态: {{ pres.presStatus === 1 ? '未支付' : (pres.presStatus === 2 ? '已支付' : '其他') }}</span>
+             </div>
+             <table class="pres-table">
+               <thead>
+                 <tr>
+                   <th>药品名称</th>
+                   <th>数量</th>
+                   <th>单价</th>
+                   <th>小计</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 <tr v-for="detail in pres.details" :key="detail.detailId">
+                   <td>{{ detail.drug?.drugName || '未知药品' }}</td>
+                   <td>{{ detail.detailQuantity }}</td>
+                   <td>¥{{ detail.drug?.drugPrice }}</td>
+                   <td>¥{{ detail.detailAmount }}</td>
+                 </tr>
+               </tbody>
+             </table>
+          </div>
+        </div>
+
         <div class="detail-section" v-if="selectedVisit.visNote">
           <h3>备注</h3>
           <div class="detail-text">{{ selectedVisit.visNote }}</div>
@@ -246,9 +275,14 @@ export default {
       selectedPrescriptions.value = [] // 重置处方列表
       try {
         const res = await prescriptionApi.getPrescriptionsByVisitId(visit.visId)
-        selectedPrescriptions.value = res.data
+        if (res.data && res.data.length > 0) {
+          selectedPrescriptions.value = res.data
+        } else {
+          selectedPrescriptions.value = []
+        }
       } catch (e) {
         console.error('获取处方详情失败:', e)
+        selectedPrescriptions.value = []
       }
     }
     

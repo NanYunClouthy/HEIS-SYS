@@ -90,7 +90,7 @@ CREATE TABLE `drug` (
   `DRUG_SPEC` varchar(50) DEFAULT NULL COMMENT '规格',
   PRIMARY KEY (`DRUG_ID`),
   UNIQUE KEY `UK_DRUG_CODE` (`DRUG_CODE`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='药品表';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='药品表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +99,7 @@ CREATE TABLE `drug` (
 
 LOCK TABLES `drug` WRITE;
 /*!40000 ALTER TABLE `drug` DISABLE KEYS */;
-INSERT INTO `drug` VALUES (1,'阿莫西林胶囊','AMXL001',25.50,97,'盒','0.25g*24粒'),(2,'布洛芬缓释胶囊','BLF001',18.00,50,'盒','0.3g*20粒'),(3,'感冒灵颗粒','GML001',15.00,200,'盒','10g*9袋'),(4,'头孢拉定胶囊','TFLD001',32.00,80,'盒','0.25g*24粒'),(5,'维生素C片','WSSC001',5.00,500,'瓶','100片');
+INSERT INTO `drug` VALUES (1,'阿莫西林胶囊','AMXL001',25.50,98,'盒','0.25g*24粒'),(2,'布洛芬缓释胶囊','BLF001',18.00,50,'盒','0.3g*20粒'),(3,'感冒灵颗粒','GML001',15.00,200,'盒','10g*9袋'),(4,'头孢拉定胶囊','TFLD001',32.00,80,'盒','0.25g*24粒'),(5,'维生素C片','WSSC001',5.00,500,'瓶','100片'),(7,'3232','SDSD221',21.00,30,'盒','0.25g*24粒');
 /*!40000 ALTER TABLE `drug` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +120,7 @@ CREATE TABLE `opd` (
   PRIMARY KEY (`OPD_ID`),
   KEY `OPD_PAT_ID` (`OPD_PAT_ID`),
   CONSTRAINT `opd_ibfk_1` FOREIGN KEY (`OPD_PAT_ID`) REFERENCES `patient` (`PAT_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖琛';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖琛';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +129,7 @@ CREATE TABLE `opd` (
 
 LOCK TABLES `opd` WRITE;
 /*!40000 ALTER TABLE `opd` DISABLE KEYS */;
-INSERT INTO `opd` VALUES (1,'2025-12-18 15:18:43','2025-12-18 15:18:43','内科',1,3),(2,'2025-12-19 09:10:58','2025-12-19 09:10:58','内科',1,2),(3,'2025-12-19 10:30:12','2025-12-19 10:30:12','内科',2,1),(4,'2025-12-19 10:32:06','2025-12-19 10:32:06','内科',1,3),(5,'2025-12-23 01:03:11','2025-12-23 01:03:11','内科',1,3),(7,'2025-12-26 06:10:02','2025-12-26 06:10:02','内科',1,3),(8,'2025-12-25 22:13:46','2025-12-25 22:13:46','内科',1,3),(9,'2025-12-26 17:22:30','2025-12-26 17:22:30','内科',1,2),(10,'2025-12-26 09:27:33','2025-12-26 09:27:33','内科',6,3),(11,'2025-12-26 09:37:23','2025-12-26 09:37:23','内科',6,3);
+INSERT INTO `opd` VALUES (1,'2025-12-18 15:18:43','2025-12-18 15:18:43','内科',1,3),(2,'2025-12-19 09:10:58','2025-12-19 09:10:58','内科',1,2),(3,'2025-12-19 10:30:12','2025-12-19 10:30:12','内科',2,1),(4,'2025-12-19 10:32:06','2025-12-19 10:32:06','内科',1,3),(5,'2025-12-23 01:03:11','2025-12-23 01:03:11','内科',1,3),(7,'2025-12-26 06:10:02','2025-12-26 06:10:02','内科',1,3),(8,'2025-12-25 22:13:46','2025-12-25 22:13:46','内科',1,3),(9,'2025-12-26 17:22:30','2025-12-26 17:22:30','内科',1,2),(10,'2025-12-26 09:27:33','2025-12-26 09:27:33','内科',6,3),(11,'2025-12-26 09:37:23','2025-12-26 09:37:23','内科',6,3),(12,'2025-12-26 10:32:10','2025-12-26 10:32:10','内科',6,3);
 /*!40000 ALTER TABLE `opd` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +154,7 @@ CREATE TABLE `opd_visit_history` (
   PRIMARY KEY (`VIS_ID`),
   KEY `PAT_ID` (`PAT_ID`),
   CONSTRAINT `opd_visit_history_ibfk_1` FOREIGN KEY (`PAT_ID`) REFERENCES `patient` (`PAT_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖灏辫瘖鍘嗗彶琛';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='闂ㄨ瘖灏辫瘖鍘嗗彶琛';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +163,7 @@ CREATE TABLE `opd_visit_history` (
 
 LOCK TABLES `opd_visit_history` WRITE;
 /*!40000 ALTER TABLE `opd_visit_history` DISABLE KEYS */;
-INSERT INTO `opd_visit_history` VALUES (1,1,1,'患者主诉头痛、发热','上呼吸道感染','医生A','2025-12-18 15:18:43','医生A','2025-12-18 15:18:43',NULL),(2,1,1,'123123','323232','王医生','2025-12-22 20:36:52','王医生','2025-12-22 20:36:52','123123'),(3,1,1,'123213','232323','王医生','2025-12-23 01:04:38','王医生','2025-12-23 01:04:38','12312313123131'),(4,1,1,'232323','23232','王医生','2025-12-25 22:14:36','王医生','2025-12-25 22:14:36','32323232323232'),(5,1,1,'患者自述头痛发热','上呼吸道感染','Doctor1','2025-12-26 17:22:30','Doctor1','2025-12-26 17:22:30','建议休息'),(6,6,1,'12121221','12121','王医生','2025-12-26 09:28:08','王医生','2025-12-26 09:28:08','212121121'),(7,1,1,'12313','123232','王医生','2025-12-26 09:31:28','王医生','2025-12-26 09:31:28','232323232'),(8,6,1,'123','232323','王医生','2025-12-26 09:38:04','王医生','2025-12-26 09:38:04','21132131313');
+INSERT INTO `opd_visit_history` VALUES (1,1,1,'患者主诉头痛、发热','上呼吸道感染','医生A','2025-12-18 15:18:43','医生A','2025-12-18 15:18:43',NULL),(2,1,1,'123123','323232','王医生','2025-12-22 20:36:52','王医生','2025-12-22 20:36:52','123123'),(3,1,1,'123213','232323','王医生','2025-12-23 01:04:38','王医生','2025-12-23 01:04:38','12312313123131'),(4,1,1,'232323','23232','王医生','2025-12-25 22:14:36','王医生','2025-12-25 22:14:36','32323232323232'),(5,1,1,'患者自述头痛发热','上呼吸道感染','Doctor1','2025-12-26 17:22:30','Doctor1','2025-12-26 17:22:30','建议休息'),(6,6,1,'12121221','12121','王医生','2025-12-26 09:28:08','王医生','2025-12-26 09:28:08','212121121'),(7,1,1,'12313','123232','王医生','2025-12-26 09:31:28','王医生','2025-12-26 09:31:28','232323232'),(8,6,1,'123','232323','王医生','2025-12-26 09:38:04','王医生','2025-12-26 09:38:04','21132131313'),(9,6,1,'1231','123132','王医生','2025-12-26 10:33:13','王医生','2025-12-26 10:33:13','123');
 /*!40000 ALTER TABLE `opd_visit_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +218,7 @@ CREATE TABLE `prescription` (
   PRIMARY KEY (`PRES_ID`),
   KEY `IDX_PRES_VIS_ID` (`VIS_ID`),
   CONSTRAINT `FK_PRES_VIS` FOREIGN KEY (`VIS_ID`) REFERENCES `opd_visit_history` (`VIS_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='处方主表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='处方主表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,7 +227,7 @@ CREATE TABLE `prescription` (
 
 LOCK TABLES `prescription` WRITE;
 /*!40000 ALTER TABLE `prescription` DISABLE KEYS */;
-INSERT INTO `prescription` VALUES (1,5,51.00,1,'2025-12-26 09:22:29'),(2,8,25.50,1,'2025-12-26 09:38:04');
+INSERT INTO `prescription` VALUES (1,5,51.00,1,'2025-12-26 09:22:29'),(2,8,25.50,1,'2025-12-26 09:38:04'),(3,9,102.00,1,'2025-12-26 10:33:13');
 /*!40000 ALTER TABLE `prescription` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,7 +249,7 @@ CREATE TABLE `prescription_detail` (
   KEY `IDX_DETAIL_DRUG_ID` (`DRUG_ID`),
   CONSTRAINT `FK_DETAIL_DRUG` FOREIGN KEY (`DRUG_ID`) REFERENCES `drug` (`DRUG_ID`),
   CONSTRAINT `FK_DETAIL_PRES` FOREIGN KEY (`PRES_ID`) REFERENCES `prescription` (`PRES_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='处方明细表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='处方明细表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `prescription_detail` (
 
 LOCK TABLES `prescription_detail` WRITE;
 /*!40000 ALTER TABLE `prescription_detail` DISABLE KEYS */;
-INSERT INTO `prescription_detail` VALUES (1,1,1,2,51.00),(2,2,1,1,25.50);
+INSERT INTO `prescription_detail` VALUES (1,1,1,2,51.00),(2,2,1,1,25.50),(3,3,1,4,102.00);
 /*!40000 ALTER TABLE `prescription_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +312,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'patient1@example.com','$2a$10$H.DXRZLeoQoerjTrLYDe4.qwsj8m7MWgXCORWzRVg/bdBQs2Hsx3e','13800138000','A','patient1'),(2,'doctor1@example.com','$2a$10$UKnal0Ai0dJL.1iT4f9yW.OT0WHeRVlL7xAP/8aG5/95tpNCyxpwK','13900139000','A','doctor1'),(3,'admin1@example.com','$2a$10$PhXnwN7NERpKT3RtzITslum5xvpvA8qzgsNV8evv3E.GdEqClSmtm','13700137000','A','admin1'),(4,NULL,'$2a$10$A5vG0BGs4SDBVaEIOr/5oOYzrvWUZhVcF/Mwhc8GqaxCk.ec/djh2',NULL,'A','testpatient3'),(5,NULL,'$2a$10$xWlkCOdzT7UNxijWf8ZdaeZ5sSS/jH5A5VJAu.w1wAzCHq0zSva/u',NULL,'A','testpatient4'),(6,NULL,'$2a$10$KFdkPRN1VKHT8VKoA8XD8u7HKugUXo0k8vd53ErA1pljrdVGcJNOa',NULL,'A','lz');
+INSERT INTO `user` VALUES (1,'patient1@example.com','$2a$10$2ff3/s9V8Rge7oG1ZWfeZuzZqjcUQzWVUTjVuCnjW9k5ozblpEv1C','13800138000','A','patient1'),(2,'doctor1@example.com','$2a$10$H3NL5mfjRaJSg5zFx3Seo.8uRqDaiGAt4G3g60zIQ7RNmBRYPl2li','13900139000','A','doctor1'),(3,'admin1@example.com','$2a$10$rye7b/Xyznpy/iLZWUk8reFQYt6doPw9gW8VyKE5UEOyOKqXsrNVy','13700137000','A','admin1'),(4,NULL,'$2a$10$A5vG0BGs4SDBVaEIOr/5oOYzrvWUZhVcF/Mwhc8GqaxCk.ec/djh2',NULL,'A','testpatient3'),(5,NULL,'$2a$10$xWlkCOdzT7UNxijWf8ZdaeZ5sSS/jH5A5VJAu.w1wAzCHq0zSva/u',NULL,'A','testpatient4'),(6,NULL,'$2a$10$KFdkPRN1VKHT8VKoA8XD8u7HKugUXo0k8vd53ErA1pljrdVGcJNOa',NULL,'A','lz');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,4 +356,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-26  9:59:40
+-- Dump completed on 2025-12-26 15:42:46

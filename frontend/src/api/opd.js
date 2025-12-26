@@ -33,6 +33,11 @@ export const opdApi = {
   getWaitingPatientsByDept(dept) {
     return apiClient.get(`/opds/waiting/${dept}`)
   },
+
+  // 获取当前医生的待就诊患者列表
+  getWaitingPatientsByDoctor() {
+    return apiClient.get('/opds/waiting/my')
+  },
   
   // 叫号
   callPatient(id) {

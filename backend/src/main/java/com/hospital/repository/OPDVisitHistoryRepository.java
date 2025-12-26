@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface OPDVisitHistoryRepository extends JpaRepository<OPDVisitHistory, Integer> {
     List<OPDVisitHistory> findByPatientPatId(Integer patId);
-    List<OPDVisitHistory> findByVisDocId(Integer visDocId);
+    List<OPDVisitHistory> findByDoctorDocId(Integer docId);
 }

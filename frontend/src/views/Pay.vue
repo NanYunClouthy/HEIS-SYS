@@ -37,6 +37,7 @@ export default {
     const opdId = route.query.opdId || ''
     const patId = route.query.patId || ''
     const opdDept = route.query.opdDept || ''
+    const docId = route.query.docId || ''
     const success = ref(false)
     const errorMessage = ref('')
     const isLoading = ref(false)
@@ -58,6 +59,11 @@ export default {
           patient: { patId: Number(patId) },
           opdStats: 1
         }
+        
+        if (docId) {
+          opdData.doctor = { docId: Number(docId) }
+        }
+
         const { opdApi } = await import('../api/opd')
         await opdApi.createOPD(opdData)
         success.value = true

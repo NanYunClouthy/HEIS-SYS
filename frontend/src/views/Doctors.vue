@@ -47,13 +47,23 @@
       <div class="modal-content">
         <h2>{{ isEdit ? '编辑医生' : '新增医生' }}</h2>
         <form @submit.prevent="save">
+          <div v-if="!isEdit">
+            <label>用户名</label>
+            <input v-model="form.username" required>
+          </div>
+          <div v-if="!isEdit">
+            <label>密码</label>
+            <input type="password" v-model="form.password" required>
+          </div>
           <div>
             <label>姓名</label>
             <input v-model="form.docName" required>
           </div>
           <div>
             <label>科室</label>
-            <input v-model="form.docDept" required>
+            <select v-model="form.docDept" required>
+              <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>
+            </select>
           </div>
           <div>
             <label>职称</label>
@@ -88,11 +98,13 @@ export default {
     const doctors = ref([])
     const showModal = ref(false)
     const isEdit = ref(false)
-    const form = ref({ docId: null, docName: '', docDept: '', docTitle: '', docSpecialty: '' })
+    const form = ref({ docId: null, docName: '', docDept: '', docTitle: '', docSpecialty: '', username: '', password: '' })
     const errorMessage = ref('')
     const successMessage = ref('')
     const isLoading = ref(false)
     
+    const departments = ['内科', '外科', '儿科', '妇科', '眼科', '耳鼻喉科', '口腔科', '皮肤科', '中医科', '急诊科']
+
     const fetch = async () => {
       isLoading.value = true
       errorMessage.value = ''
@@ -110,7 +122,7 @@ export default {
     
     const openAdd = () => {
       isEdit.value = false
-      form.value = { docId: null, docName: '', docDept: '', docTitle: '', docSpecialty: '' }
+      form.value = { docId: null, docName: '', docDept: departments[0], docTitle: '', docSpecialty: '', username: '', password: '' }
       showModal.value = true
     }
     
@@ -182,7 +194,8 @@ export default {
       close,
       errorMessage,
       successMessage,
-      isLoading
+      isLoading,
+      departments
     }
   }
 }

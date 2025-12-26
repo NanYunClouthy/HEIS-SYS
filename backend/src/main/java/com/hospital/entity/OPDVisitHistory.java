@@ -17,8 +17,9 @@ public class OPDVisitHistory {
     @JoinColumn(name = "PAT_ID", nullable = false)
     private Patient patient;
 
-    @Column(name = "VIS_DOC_ID", nullable = false)
-    private Integer visDocId;
+    @ManyToOne
+    @JoinColumn(name = "VIS_DOC_ID", nullable = false)
+    private Doctor doctor;
 
     @Column(name = "VIS_CASE_DESC", nullable = false, columnDefinition = "text")
     private String visCaseDesc;

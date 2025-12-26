@@ -27,6 +27,10 @@ public class OPD {
     @JoinColumn(name = "OPD_PAT_ID", nullable = false)
     private Patient patient;
 
+    @ManyToOne
+    @JoinColumn(name = "OPD_DOC_ID")
+    private Doctor doctor;
+
     @Column(name = "OPD_STATS", nullable = false, columnDefinition = "int default 1")
     private Integer opdStats;
 }
