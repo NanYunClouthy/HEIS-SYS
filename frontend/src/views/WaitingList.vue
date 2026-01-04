@@ -75,7 +75,7 @@
             <select v-model="selectedDrugId">
               <option value="">请选择药品</option>
               <option v-for="drug in drugs" :key="drug.drugId" :value="drug.drugId">
-                {{ drug.drugName }} (库存: {{ drug.drugStock }}) - ￥{{ drug.drugPrice }}
+                {{ drug.drugName }} (规格: {{ drug.drugSpec || '无' }}, 库存: {{ drug.drugStock }}) - ￥{{ drug.drugPrice }}
               </option>
             </select>
             <input type="number" v-model.number="selectedQuantity" min="1" placeholder="数量">
@@ -121,6 +121,12 @@
     <div class="success-message" v-if="successMessage">
       {{ successMessage }}
       <button @click="successMessage = ''">关闭</button>
+    </div>
+
+    <!-- 错误提示 -->
+    <div class="error-message" v-if="errorMessage">
+      {{ errorMessage }}
+      <button @click="errorMessage = ''">关闭</button>
     </div>
   </div>
 </template>
@@ -260,7 +266,7 @@ export default {
       if (!drug) return
 
       if (this.selectedQuantity > drug.drugStock) {
-        this.errorMessage = `库存不足，${drug.drugName} 当前库存仅剩 ${drug.drugStock}`
+        this.errorMessage = `药品【${drug.drugName}】库存不足，当前库存：${drug.drugStock}`
         return
       }
       
@@ -268,7 +274,7 @@ export default {
       const existingItem = this.prescriptionItems.find(item => item.drugId === drug.drugId)
       if (existingItem) {
         if (existingItem.quantity + this.selectedQuantity > drug.drugStock) {
-           this.errorMessage = `库存不足，${drug.drugName} 总数量不能超过 ${drug.drugStock}`
+           this.errorMessage = `药品【${drug.drugName}】库存不足，当前库存：${drug.drugStock}`
            return
         }
         existingItem.quantity += this.selectedQuantity

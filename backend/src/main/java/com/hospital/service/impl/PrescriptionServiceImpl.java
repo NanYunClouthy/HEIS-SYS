@@ -49,7 +49,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
             // Check Stock
             if (drug.getDrugStock() < item.getQuantity()) {
-                throw new RuntimeException("Insufficient stock for drug: " + drug.getDrugName());
+                throw new RuntimeException("药品【" + drug.getDrugName() + "】库存不足，当前库存：" + drug.getDrugStock());
             }
 
             // Deduct Stock
